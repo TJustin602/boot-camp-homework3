@@ -1,0 +1,147 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 91,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# import pandas .. cause we need some help! \n",
+    "import pandas as pd"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 92,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# set our path and open the file \n",
+    "from pathlib import Path\n",
+    "Path.cwd()\n",
+    "# print(Path.cwd())\n",
+    "# is there a way to make the next line below, 'smaller'?? \n",
+    "file_path = Path('/Users/travis/Desktop/github/python-homework/pybank/resources/data.csv')\n",
+    "data_csv = pd.read_csv(file_path)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 93,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# do math. ick. "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 94,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# using our clean data.... which i know was a gift \n",
+    "months = len(data_csv) # kind of cheating,relying on clean data\n",
+    "\n",
+    "# the net total amount of Profit/Losses over the entire period\n",
+    "total = data_csv['Profit/Losses'].sum()\n",
+    "\n",
+    "#Determine the amount of increase or decrease from the previous month\n",
+    "amtchange = data_csv[\"Profit/Losses\"].diff()\n",
+    "\n",
+    "#flip it... \n",
+    "data_csv[\"amount changed\"] = amtchange\n",
+    "\n",
+    "\n",
+    "# what is the great increase \n",
+    "# find and format the max dollar amount\n",
+    "# find the date in the same row\n",
+    "great_inc = '${:.0f}'.format(data_csv[\"amount changed\"].max())\n",
+    "\n",
+    "inc_date = (data_csv.loc[data_csv['amount changed'].idxmax(), 'Date'])\n",
+    "\n",
+    "# what is the great decrease\n",
+    "# find and format the min dollar amount\n",
+    "# find the date in the same row\n",
+    "great_dec =  '${:.0f}'.format(data_csv[\"amount changed\"].min())\n",
+    "\n",
+    "\n",
+    "dec_date =(data_csv.loc[data_csv['amount changed'].idxmin(), 'Date'])\n",
+    "\n",
+    "# find the average change\n",
+    "average = '${:.2f}'.format(data_csv['amount changed'].mean())"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 95,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Financial Analysis\n",
+      "------------------------------\n",
+      "Total Months: 86\n",
+      "Total of Profit/Losses over entire period: $38382578\n",
+      "Average Change: $-2315.12\n",
+      "Greatest Increase in Profits: Feb-2012  ($1926159)\n",
+      "Greatest Decrease in Profits: Sep-2013 ($-2196167)\n"
+     ]
+    }
+   ],
+   "source": [
+    "# print  in jupyter... \n",
+    "print(\"Financial Analysis\")\n",
+    "print(\"------------------------------\")\n",
+    "print(f\"Total Months:\", months)\n",
+    "print(f\"Total of Profit/Losses over entire period: ${total}\")\n",
+    "print(f\"Average Change: {average}\")\n",
+    "print(f\"Greatest Increase in Profits: {inc_date}  ({great_inc})\")\n",
+    "print(f\"Greatest Decrease in Profits: {dec_date} ({great_dec})\")\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 96,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# save to a file and THIS was not easy to find / do !!! \n",
+    "file = open(\"results.txt\", \"w\")\n",
+    "with open(\"results.txt\", \"w\") as file:\n",
+    "    print(\"Financial Analysis\" + '\\n' +\n",
+    "    (\"------------------------------\") + '\\n' +\n",
+    "    (f\"Total Months: {months}\") + '\\n' +\n",
+    "    (f\"Total of Profit/Losses over entire period: ${total}\") + '\\n' +\n",
+    "    (f\"Average Change:  {average}\") + '\\n' +\n",
+    "    (f\"Greatest Increase in Profits: {inc_date}  ({great_inc})\") + '\\n' +\n",
+    "    (f\"Greatest Decrease in Profits: {dec_date} ({great_dec})\"), file=file)\n",
+    "file.close()"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.8.3"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 4
+}
